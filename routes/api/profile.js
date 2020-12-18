@@ -4,7 +4,7 @@ const router = express.Router();
 const auth = require('../../middlewares/auth');
 const Profile = require('../../models/Profile');
 const User = require('../../models/User');
-const {profileValidator} = require('../../validators/auth');
+const {profileValidator, experienceValidator} = require('../../validators/auth');
 const {runValidation} = require('../../validators/index');
 
 
@@ -128,6 +128,75 @@ router.get('/user/:user_id', async (req, res) =>{
     }
 })
 
+// Delete , api/profile/delete ,  delete profile, user, post, private 
+
+
+router.delete('/', auth, async (req, res) =>{
+    try {
+         await Profile.findOneAndRemove({user: req.user.id});
+         await User.findOneAndRemove({_id: req.user.id});
+         
+         return res.json({message: "User deleted"})
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send('Server Error')      
+    }
+});
+
+//put, add experience, private
+router.put('/experience', auth, experienceValidator, runValidation, async (req, res) => {
+    const {
+        title,
+        company,
+        location,
+        from,
+        to,
+        current,
+        description
+      } = req.body;
+  
+      const newEdu = {
+        title,
+        company,
+        location,
+        from,
+        to,
+        current,
+        description
+      };
+  
+      try {
+        const profile = await Profile.findOne({ user: req.user.id });
+  
+        profile.experience.unshift(newEdu);
+  
+        await profile.save();
+  
+        res.json(profile);
+      } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+      }
+    });
+
+    // delete, profile exp, private
+
+router.delete('/experience/:exp_id', auth, async (req, res)=> {
+        try {
+            const profile = await Profile.findOne({ user: req.user.id }); 
+            const removeIndex = profile.experience.map(item => item.id).indexOf(req.params.exp_id);
+
+            profile.experience.splice(removeIndex, 1);
+            await profile.save();
+
+            res.json({profile})
+
+        } catch (error) {
+            console.error(err.message);
+        res.status(500).send('Server Error');
+        }
+})
+ 
 
 
 
