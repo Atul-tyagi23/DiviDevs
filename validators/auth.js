@@ -22,8 +22,16 @@ const experienceValidator = [
     check('title', 'title is required').not().isEmpty(),
     check('company', 'company is required').not().isEmpty(),
     check('from', 'from Date is required').not().isEmpty(),
+]
+
+const educationValidator = [
+    check('school', 'School is required').not().isEmpty(),
+    check('degree', 'degree is required').not().isEmpty(),
+    check('fieldofstudy', 'field of study is required').not().isEmpty(),
+    check('from', 'from is required').not().isEmpty()
 
 ]
 
-
-module.exports = {signupValidator, loginValidator, profileValidator, experienceValidator}
+module.exports = {signupValidator, loginValidator, profileValidator, experienceValidator,
+    educationValidator
+}
