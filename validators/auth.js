@@ -29,9 +29,15 @@ const educationValidator = [
     check('degree', 'degree is required').not().isEmpty(),
     check('fieldofstudy', 'field of study is required').not().isEmpty(),
     check('from', 'from is required').not().isEmpty()
+];
 
-]
+const postValidator = [
+    check('text', 'Text is required').not().isEmpty(),
+];
+
+
+
 
 module.exports = {signupValidator, loginValidator, profileValidator, experienceValidator,
-    educationValidator
+    educationValidator, postValidator
 }
