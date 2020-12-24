@@ -18,7 +18,7 @@ router.post('/', signupValidator, runValidation, async (req, res) => {
     try {
         let user = await User.findOne({email});
         if(user){
-           return res.status(400).json({errors: [{msg:"User with same already exist"}]})
+           return res.status(400).json({errors: [{msg:"User with same email already exist"}]})
         }
 
         const avatar = gravatar.url(email, {
