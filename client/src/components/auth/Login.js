@@ -1,7 +1,13 @@
 import React, {useState} from 'react';
 import { Link, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { login } from '../../actions/auth';
+import {setAlert} from '../../actions/alert';
 
-const Login = () => {
+
+
+const Login = ({login, isAuthenticated}) => {
     const [formData, setFormData] = useState({
          email: "",
         password: ""
@@ -12,9 +18,13 @@ const Login = () => {
 
     const onSubmit = async e => {
         e.preventDefault();
-        console.log('Success')
- 
+    //    setAlert('User Registered', 'success', 4000);
+        login(email, password);
     };
+
+    if(isAuthenticated ) {
+      return <Redirect to="/dashboard" />
+    }
 
     return (
         <div>
@@ -48,4 +58,14 @@ const Login = () => {
     )
 };
 
-export default Login;
+Login.prototype = {
+  login : PropTypes.func.isRequired,
+  setAlert : PropTypes.func.isRequired,
+  isAuthenticated : PropTypes.bool,
+}
+
+const mapStateToProp = state => ({
+  isAuthenticated : state.auth.isAuthenticated,
+})
+
+export default connect(mapStateToProp, {login, setAlert})(Login);

@@ -1,5 +1,5 @@
 import './App.css';
-import React, {Fragment} from 'react';
+import React, {Fragment, useEffect} from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
 import Navbar from './components/layout/Navbar';
 import Landing from './components/layout/Landing';
@@ -9,10 +9,25 @@ import Alert from './components/layout/Alert';
 import Dashboard from './components/dashboard/Dashboard'
 //Redux
 import { Provider} from 'react-redux';
-import Store from './store'
+import Store from './store';
+import {loadUser} from './actions/auth'
+import store from './store';
+import setAuthToken from './utils/setAuthToken';
 
 
-const App = () => (
+if(localStorage.token) {
+  
+  setAuthToken(localStorage.token);
+
+}
+
+
+const App = () => {
+  useEffect(()=> {
+     store.dispatch(loadUser());
+  }, []);
+  
+  return (
   <Provider store={Store}>
     <Router>
     <div className="App">
@@ -32,6 +47,7 @@ const App = () => (
     </div>
     </Router>
   </Provider>
-);
+)
+};
  
 export default App;
