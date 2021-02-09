@@ -16,14 +16,16 @@ require('dotenv').config()
 
 // api/profile/me, get own profile route, private
 router.get('/me', auth, async (req, res)=>{
+   // console.log('in me ');
     try {
         const profile = await Profile.findOne({user: req.user.id}).populate('user', 
         ['name', 'avatar']);
+      //  console.log(profile)
 
         if(!profile){
-            return res.status(400).json({message: "There is no profile for this user"})
+            return res.status(200).json({message: "There is no profile for this user"})
         }
-        return res.this.status(200).json({profile});
+        return res.status(200).json({profile});
 
     }catch(err){
         console.log(err);
