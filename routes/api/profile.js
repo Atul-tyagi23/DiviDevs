@@ -25,7 +25,7 @@ router.get('/me', auth, async (req, res)=>{
         if(!profile){
             return res.status(200).json({message: "There is no profile for this user"})
         }
-        return res.status(200).json({profile});
+        return res.status(200).json(profile);
 
     }catch(err){
         console.log(err);
@@ -84,7 +84,7 @@ router.post('/',auth, profileValidator, runValidation, async (req, res) => {
                 { $set: profileFields },
                 {new: true}
             );
-            return res.json({profile});
+            return res.json(profile);
         }
 
         //Create 
@@ -106,7 +106,7 @@ router.post('/',auth, profileValidator, runValidation, async (req, res) => {
 router.get('/', async (req, res) =>{
     try {
         const profiles = await Profile.find().populate('user', ['name', 'avatar']);
-        return res.json({profiles})
+        return res.json(profiles)
     } catch (err) {
         console.log(err.message);
         res.status(500).send('Server Error')      
