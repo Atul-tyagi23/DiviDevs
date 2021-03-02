@@ -5,6 +5,7 @@ const router = express.Router();
 const auth = require('../../middlewares/auth');
 const Profile = require('../../models/Profile');
 const User = require('../../models/User');
+const Post = require('../../models/Post');
 const {profileValidator, experienceValidator, educationValidator} = require('../../validators/auth');
 const {runValidation} = require('../../validators/index');
 const request = require('request');
@@ -61,6 +62,7 @@ router.post('/',auth, profileValidator, runValidation, async (req, res) => {
     if(location) profileFields.location = location;
     if(bio) profileFields.bio = bio;
     if(status) profileFields.status = status;
+    if(githubusername) profileFields.githubusername = githubusername;
     if(skills) {
         profileFields.skills = skills.split(',').map(skill => skill.trim());
     }
@@ -75,7 +77,7 @@ router.post('/',auth, profileValidator, runValidation, async (req, res) => {
 
     try {
         let profile = await Profile.findOne({user: req.user.id })
-        console.log('hy');
+       // console.log('hy');
 
         if(profile){
             profile_id = profile.id;
@@ -139,6 +141,7 @@ router.get('/user/:user_id', async (req, res) =>{
 
 router.delete('/', auth, async (req, res) =>{
     try {
+         await Post.deleteMany({ user: req.user.id});
          await Profile.findOneAndRemove({user: req.user.id});
          await User.findOneAndRemove({_id: req.user.id});
          
@@ -195,7 +198,7 @@ router.delete('/experience/:exp_id', auth, async (req, res)=> {
             profile.experience.splice(removeIndex, 1);
             await profile.save();
 
-            res.json({profile})
+            res.json(profile)
 
         } catch (error) {
             console.error(err.message);
@@ -224,7 +227,7 @@ router.put('/education', auth, educationValidator, runValidation, async (req, re
         current,
         description
       };
-      console.log(newEdu);
+     // console.log(newEdu);
       try {
         const profile = await Profile.findOne({ user: req.user.id });
   
@@ -247,7 +250,7 @@ router.delete('/education/:edu_id', auth, async (req, res)=> {
         profile.education.splice(removeIndex, 1);
         await profile.save();
 
-        res.json({profile})
+        res.json(profile)
 
     } catch (err) {
         console.error(err.message);
